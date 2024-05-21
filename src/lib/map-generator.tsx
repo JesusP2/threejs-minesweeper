@@ -319,7 +319,7 @@ export function generateMines(map: number[][], minesNumber: number) {
   const height = map.length;
   let minesAdded = 0;
   const chance = minesNumber / (width * height);
-  const maxIters = 100;
+  const maxIters = 10;
   let currIter = 0;
   while (minesAdded < minesNumber && currIter < maxIters) {
     currIter++;
