@@ -1,5 +1,5 @@
 import "./style.css";
-import { GLTFLoader, OrbitControls } from "three/examples/jsm/Addons.js";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import * as THREE from "three";
 import gsap from "gsap";
 // import { GUI } from "three/addons/libs/lil-gui.module.min.js";
@@ -167,7 +167,7 @@ function simulateJump(pivot: any, targetPosition: any) {
   blockActions = true;
   const startPosition = pivot.position.clone();
   const jumpHeight = 1; // Height of the jump
-  const duration = 0.5; // Duration of the entire jump
+  const duration = 0.4; // Duration of the entire jump
   gsap.to(pivot.position, {
     duration: duration,
     x: targetPosition.x,
