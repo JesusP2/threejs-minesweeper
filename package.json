@@ -16,6 +16,7 @@
   "dependencies": {
     "@splinetool/loader": "^1.3.8",
     "@splinetool/runtime": "^1.3.8",
+    "gsap": "^3.12.5",
     "three": "^0.164.1"
   }
 }

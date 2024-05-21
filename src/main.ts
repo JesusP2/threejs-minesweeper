@@ -1,6 +1,7 @@
 import "./style.css";
 import { GLTFLoader, OrbitControls } from "three/examples/jsm/Addons.js";
 import * as THREE from "three";
+import gsap from "gsap";
 // import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
 const scene = new THREE.Scene();
@@ -18,8 +19,8 @@ const aspect = window.innerWidth / window.innerHeight;
 const near = 0.1;
 const far = 100;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-camera.position.z = 10;
-camera.zoom = 0.1;
+camera.position.set(-5.096, 16.26, 5.68);
+camera.rotation.set(-1.57, -0.62, -1.57);
 scene.add(camera);
 
 // controls for movement
@@ -63,11 +64,13 @@ document.body.appendChild(renderer.domElement);
 const dialog = document.querySelector<HTMLDialogElement>("#settings-dialog")!;
 
 const dialogForm = document.querySelector<HTMLFormElement>("#dialog-form")!;
+
+let blockActions = false;
 dialogForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const controls = new OrbitControls(camera, canvas);
-  controls.addEventListener("change", render);
-  controls.update();
+  // const controls = new OrbitControls(camera, canvas);
+  // controls.addEventListener("change", render);
+  // controls.update();
   const formData = new FormData(e.currentTarget as any);
 
   const height = Number(formData.get("height"));
@@ -75,8 +78,6 @@ dialogForm.addEventListener("submit", (e) => {
 
   const size = 2;
   const spacing = 0.2;
-  // rabbitScene.position.x = -0.1;
-  // rabbitScene.position.z = -0.5;
   for (let h = 0; h < height; h++) {
     for (let w = 0; w < width; w++) {
       const newBox = createBoxPlatform(size, spacing, [h, w]);
@@ -89,29 +90,61 @@ dialogForm.addEventListener("submit", (e) => {
     "keyup",
     (event) => {
       if (
+        !blockActions &&
         (event.key === "w" || event.key === "ArrowUp") &&
         pivot.position.x < (size + spacing) * (height - 1) - 0.1 // magic number, cba calculating the right value
       ) {
-        pivot.position.x += size + spacing;
         pivot.rotation.y = Math.PI;
+        simulateJump(
+          pivot,
+          new THREE.Vector3(
+            pivot.position.x + size + spacing,
+            pivot.position.y,
+            pivot.position.z,
+          ),
+        );
       } else if (
+        !blockActions &&
         (event.key === "s" || event.key === "ArrowDown") &&
         pivot.position.x > 0
       ) {
-        pivot.position.x -= size + spacing;
         pivot.rotation.y = 0;
+        simulateJump(
+          pivot,
+          new THREE.Vector3(
+            pivot.position.x - (size + spacing),
+            pivot.position.y,
+            pivot.position.z,
+          ),
+        );
       } else if (
+        !blockActions &&
         (event.key === "a" || event.key === "ArrowLeft") &&
         pivot.position.z > 0
       ) {
-        pivot.position.z -= size + spacing;
         pivot.rotation.y = (Math.PI * 3) / 2;
+        simulateJump(
+          pivot,
+          new THREE.Vector3(
+            pivot.position.x,
+            pivot.position.y,
+            pivot.position.z - (size + spacing),
+          ),
+        );
       } else if (
+        !blockActions &&
         (event.key === "d" || event.key === "ArrowRight") &&
         pivot.position.z < (size + spacing) * (width - 1) - 0.1
       ) {
-        pivot.position.z += size + spacing;
         pivot.rotation.y = (Math.PI * 1) / 2;
+        simulateJump(
+          pivot,
+          new THREE.Vector3(
+            pivot.position.x,
+            pivot.position.y,
+            pivot.position.z + (size + spacing),
+          ),
+        );
       }
     },
     false,
@@ -128,4 +161,25 @@ function createBoxPlatform(
   const mesh = new THREE.Mesh(geometry, material);
   mesh.position.set(pos[0] * (size + spacing), 0, pos[1] * (size + spacing));
   return mesh;
+}
+
+function simulateJump(pivot: any, targetPosition: any) {
+  blockActions = true;
+  const startPosition = pivot.position.clone();
+  const jumpHeight = 1; // Height of the jump
+  const duration = 0.5; // Duration of the entire jump
+  gsap.to(pivot.position, {
+    duration: duration,
+    x: targetPosition.x,
+    z: targetPosition.z,
+    ease: "power1.inOut",
+    onUpdate: function () {
+      const progress = this.progress();
+      const parabolicHeight = jumpHeight * 4 * progress * (1 - progress);
+      pivot.position.y = startPosition.y + parabolicHeight;
+    },
+    onComplete: () => {
+      blockActions = false;
+    },
+  });
 }
