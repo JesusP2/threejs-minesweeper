@@ -1,4 +1,9 @@
-import { createCellPlatform, createCellsText, jump } from "./cell";
+import {
+  BLOCK_ACTIONS,
+  createCellPlatform,
+  createCellsText,
+  jump,
+} from "./cell";
 import { createMap } from "./map-generator";
 import * as THREE from "three";
 
@@ -7,16 +12,17 @@ export function startGame({
   SIZE,
   SPACING,
   rabbit,
+  camera,
 }: {
   scene: THREE.Scene;
   SIZE: number;
   SPACING: number;
   rabbit: THREE.Object3D;
+  camera: THREE.PerspectiveCamera;
 }) {
   const dialog = document.querySelector<HTMLDialogElement>("#settings-dialog")!;
   const dialogForm = document.querySelector<HTMLFormElement>("#dialog-form")!;
 
-  let blockActions = false;
   dialogForm.addEventListener("submit", (e) => {
     e.preventDefault();
     // const controls = new OrbitControls(camera, canvas);
@@ -37,11 +43,17 @@ export function startGame({
     }
     dialog.close();
 
+    const mesh = createCellsText(
+      map[currentPosition.x][currentPosition.z].value,
+      [currentPosition.x, currentPosition.z],
+    );
+    scene.add(mesh);
+
     document.addEventListener(
       "keyup",
       (event) => {
         if (
-          !blockActions &&
+          !BLOCK_ACTIONS &&
           (event.key === "w" || event.key === "ArrowUp") &&
           rabbit.position.x < (SIZE + SPACING) * (height - 1) - 0.1 // magic number, cba calculating the right value
         ) {
@@ -55,8 +67,10 @@ export function startGame({
               rabbit.position.z,
             ),
           );
+          centerCamera(camera, rabbit);
+          // camera.position.x += SIZE + SPACING;
         } else if (
-          !blockActions &&
+          !BLOCK_ACTIONS &&
           (event.key === "s" || event.key === "ArrowDown") &&
           rabbit.position.x > 0
         ) {
@@ -71,7 +85,7 @@ export function startGame({
             ),
           );
         } else if (
-          !blockActions &&
+          !BLOCK_ACTIONS &&
           (event.key === "a" || event.key === "ArrowLeft") &&
           rabbit.position.z > 0
         ) {
@@ -86,7 +100,7 @@ export function startGame({
             ),
           );
         } else if (
-          !blockActions &&
+          !BLOCK_ACTIONS &&
           (event.key === "d" || event.key === "ArrowRight") &&
           rabbit.position.z < (SIZE + SPACING) * (width - 1) - 0.1
         ) {
@@ -116,4 +130,25 @@ export function startGame({
       false,
     );
   });
+}
+
+function centerCamera(camera: THREE.PerspectiveCamera, rabbit: THREE.Object3D) {
+  const box = new THREE.Box3().setFromObject(rabbit);
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  // Calculate the distance from the camera to the center of the object
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const fov = camera.fov * (Math.PI / 180);
+  let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+
+  // Multiply by a factor to give some space around the object
+  cameraZ *= 1.5;
+
+  // Set the camera position and make it look at the center of the object
+  camera.position.set(center.x, center.y, cameraZ);
+  camera.lookAt(center);
+  camera.updateProjectionMatrix();
 }

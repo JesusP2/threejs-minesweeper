@@ -39,13 +39,16 @@ export function createCellsText(num: number, position: [number, number]) {
   return mesh;
 }
 
+const availableColors = ['#7760fb', '#303250', '#f05bb5']
 export function createCellPlatform(
   size: number,
   spacing: number,
   pos: [number, number],
 ) {
+  const rand = Math.random()
+  const colorIdx = rand < 0.8 ? 0 : rand < 0.9 ? 1 : 2
   const geometry = new THREE.BoxGeometry(size, 0.1, size);
-  const material = new THREE.MeshPhongMaterial({ color: 0x333333 });
+  const material = new THREE.MeshPhongMaterial({ color: availableColors[colorIdx] });
   const mesh = new THREE.Mesh(geometry, material);
   mesh.position.set(pos[0] * (size + spacing), 0, pos[1] * (size + spacing));
   return mesh;
