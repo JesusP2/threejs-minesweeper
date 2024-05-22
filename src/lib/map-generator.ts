@@ -1,5 +1,7 @@
 // NOTE: -1 = mine
 // -2 = valid path
+
+export type MinesweeperMap = { value: number, visible: boolean }[][]
 export function createMap(width: number, height: number) {
   const row = new Array(width).fill(0);
   const map: number[][] = [];
@@ -12,7 +14,7 @@ export function createMap(width: number, height: number) {
   return map.map(row => row.map(cell => ({ visible: false, value: cell })))
 }
 
-export function printMap(map: { value: number, visible: boolean }[][]) {
+export function printMap(map: MinesweeperMap) {
   let mapViz = '';
   for (const row of map) {
     const str = row

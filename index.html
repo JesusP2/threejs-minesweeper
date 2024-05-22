@@ -13,12 +13,22 @@
       <h1>Select difficulty of game</h1>
       <form id="dialog-form">
         <menu>
-          <input name="height" placeholder="height (max 10)" type="number" max="10" />
-          <input name="width" placeholder="width (max 10)" type="number" max="10" />
-          <input name="mines" placeholder="mines (max 30)" type="number" max="30" />
+          <input name="height" value="10" placeholder="height (max 10)" type="number" max="10" />
+          <input name="width" value="10" placeholder="width (max 10)" type="number" max="10" />
+          <input name="mines" value="30" placeholder="mines (max 30)" type="number" max="30" />
         </menu>
         <button>click me senpai</button>
       </form>
     </dialog>
+    <menu class="mobile-controls">
+      <div class="row">
+        <button class="button arrow-up">U</button>
+      </div>
+      <div class="row">
+        <button class="button arrow-left">L</button>
+        <button class="button arrow-down">D</button>
+        <button class="button arrow-right">R</button>
+      </div>
+    </menu>
   </body>
 </html>

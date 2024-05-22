@@ -21,7 +21,7 @@ const near = 0.1;
 const far = 100;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-camera.position.set(-5.096 - 10, 16.26 + 10, 5.68);
+camera.position.set(-5.096, 16.26, 5.68);
 camera.rotation.set(-1.57, -0.62, -1.57);
 scene.add(camera);
 //

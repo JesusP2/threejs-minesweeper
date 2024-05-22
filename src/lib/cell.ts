@@ -5,6 +5,7 @@ import {
   FontLoader,
   TextGeometry,
 } from "three/examples/jsm/Addons.js";
+import { MinesweeperMap } from "./map-generator";
 
 export const SIZE = 2;
 export const SPACING = 0.2;
@@ -58,14 +59,28 @@ export function createCellPlatform(
 
 export function jump(
   rabbit: THREE.Object3D,
-  targetPosition: THREE.Vector3,
+  axis: "z" | "x" | "-z" | "-x",
   camera: THREE.PerspectiveCamera,
+  currentPosition: { x: number; z: number },
+  map: MinesweeperMap,
+  scene: THREE.Scene,
 ) {
   BLOCK_ACTIONS = true;
+  const targetPosition = new THREE.Vector3(
+    rabbit.position.x,
+    rabbit.position.y,
+    rabbit.position.z,
+  );
+  if (axis.startsWith("-")) {
+    const _axis = axis[1] as "z" | "x";
+    targetPosition[_axis] -= SIZE + SPACING;
+  } else {
+    targetPosition[axis as "z" | "x"] += SIZE + SPACING;
+  }
   const startPosition = rabbit.position.clone();
   const jumpHeight = 1;
   const duration = 0.4;
-  const yo = rabbit.position.y
+  const yo = rabbit.position.y;
   gsap.to(rabbit.position, {
     duration: duration,
     x: targetPosition.x,
@@ -81,26 +96,56 @@ export function jump(
       BLOCK_ACTIONS = false;
     },
   });
+  revealCell(currentPosition, map, scene);
 }
 
-export function centerCamera(camera: THREE.PerspectiveCamera, rabbit: THREE.Object3D, yo) {
+export function centerCamera(
+  camera: THREE.PerspectiveCamera,
+  rabbit: THREE.Object3D,
+  basePosition: number,
+) {
   const box = new THREE.Box3().setFromObject(rabbit);
   const center = new THREE.Vector3();
   box.getCenter(center);
 
   const size = new THREE.Vector3();
   box.getSize(size);
-  // // Calculate the distance from the camera to the center of the object
-  // const maxDim = Math.max(size.x, size.y, size.z);
-  // const fov = camera.fov * (Math.PI / 180);
-  // let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-  //
-  // // Multiply by a factor to give some space around the object
-  // cameraZ *= 1.5;
-  //
-  // // Set the camera position and make it look at the center of the object
-  camera.position.set(center.x - 10, yo + 10, center.z);
+  const vec = [10, 15, 0]
+  if (isMobile()) {
+    vec[1] = 30
+    vec[0] = 30
+    vec[2] = 5
+  }
+  camera.position.set(center.x - vec[0], basePosition + vec[1], center.z + vec[2]);
   // camera.position.y += 3;
   // camera.lookAt(center);
   camera.updateProjectionMatrix();
+}
+
+export function revealCell(
+  currentPosition: { x: number; z: number },
+  map: MinesweeperMap,
+  scene: THREE.Scene,
+) {
+  const cell = map[currentPosition.x][currentPosition.z];
+  if (cell.value >= 0 && !cell.visible) {
+    const mesh = createCellsText(cell.value, [
+      currentPosition.x,
+      currentPosition.z,
+    ]);
+    scene.add(mesh);
+  } else if (cell.value === -1) {
+    console.log("Dentge");
+  }
+}
+
+function isMobile() {
+  const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+  return regex.test(navigator.userAgent);
+}
+
+if (isMobile()) {
+  console.log("Mobile device detected");
+} else {
+  console.log("Desktop device detected");
 }

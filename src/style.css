@@ -3,3 +3,29 @@ body {
   padding: 0;
   overflow: hidden;
 }
+
+.mobile-controls {
+  position: absolute;
+  bottom: 0px;
+  right: 2%;
+  padding: 2px;
+  .row {
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+    gap: 6px;
+  }
+  & button {
+    border-radius: 5px;
+    border: 0;
+    padding: 12px;
+  }
+}
+
+@media(max-width: 700px) {
+  .mobile-controls {
+    & button {
+      padding: 20px;
+    }
+  }
+}

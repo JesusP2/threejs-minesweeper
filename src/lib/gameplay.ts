@@ -50,7 +50,54 @@ export function startGame({
     );
     scene.add(mesh);
 
-    centerCamera(camera, rabbit, rabbit.position.y)
+    centerCamera(camera, rabbit, rabbit.position.y);
+
+    const arrowUpButton =
+      document.querySelector<HTMLButtonElement>(".arrow-up")!;
+    arrowUpButton.addEventListener("click", () => {
+      if (
+        !BLOCK_ACTIONS &&
+        rabbit.position.x < (SIZE + SPACING) * (height - 1) - 0.1
+      ) {
+        currentPosition.x += 1;
+        rabbit.rotation.y = Math.PI;
+        jump(rabbit, "x", camera, currentPosition, map, scene);
+      }
+    });
+
+    const arrowDownButton =
+      document.querySelector<HTMLButtonElement>(".arrow-down")!;
+    arrowDownButton.addEventListener("click", () => {
+      if (!BLOCK_ACTIONS && rabbit.position.x > 0) {
+        currentPosition.x -= 1;
+        rabbit.rotation.y = 0;
+        jump(rabbit, "-x", camera, currentPosition, map, scene);
+      }
+    });
+
+    const arrowLeftButton =
+      document.querySelector<HTMLButtonElement>(".arrow-left")!;
+    arrowLeftButton.addEventListener("click", () => {
+      if (!BLOCK_ACTIONS && rabbit.position.z > 0) {
+        currentPosition.z -= 1;
+        rabbit.rotation.y = (Math.PI * 3) / 2;
+        jump(rabbit, "-z", camera, currentPosition, map, scene);
+      }
+    });
+
+    const arrowRightButton =
+      document.querySelector<HTMLButtonElement>(".arrow-right")!;
+    arrowRightButton.addEventListener("click", () => {
+      if (
+        !BLOCK_ACTIONS &&
+        rabbit.position.z < (SIZE + SPACING) * (width - 1) - 0.1
+      ) {
+        currentPosition.z += 1;
+        rabbit.rotation.y = Math.PI / 2;
+        jump(rabbit, "z", camera, currentPosition, map, scene);
+      }
+    });
+
     document.addEventListener(
       "keyup",
       (event) => {
@@ -61,15 +108,7 @@ export function startGame({
         ) {
           currentPosition.x += 1;
           rabbit.rotation.y = Math.PI;
-          jump(
-            rabbit,
-            new THREE.Vector3(
-              rabbit.position.x + SIZE + SPACING,
-              rabbit.position.y,
-              rabbit.position.z,
-            ),
-            camera,
-          );
+          jump(rabbit, "x", camera, currentPosition, map, scene);
         } else if (
           !BLOCK_ACTIONS &&
           (event.key === "s" || event.key === "ArrowDown") &&
@@ -77,15 +116,7 @@ export function startGame({
         ) {
           currentPosition.x -= 1;
           rabbit.rotation.y = 0;
-          jump(
-            rabbit,
-            new THREE.Vector3(
-              rabbit.position.x - (SIZE + SPACING),
-              rabbit.position.y,
-              rabbit.position.z,
-            ),
-            camera,
-          );
+          jump(rabbit, "-x", camera, currentPosition, map, scene);
         } else if (
           !BLOCK_ACTIONS &&
           (event.key === "a" || event.key === "ArrowLeft") &&
@@ -93,42 +124,15 @@ export function startGame({
         ) {
           currentPosition.z -= 1;
           rabbit.rotation.y = (Math.PI * 3) / 2;
-          jump(
-            rabbit,
-            new THREE.Vector3(
-              rabbit.position.x,
-              rabbit.position.y,
-              rabbit.position.z - (SIZE + SPACING),
-            ),
-            camera,
-          );
+          jump(rabbit, "-z", camera, currentPosition, map, scene);
         } else if (
           !BLOCK_ACTIONS &&
           (event.key === "d" || event.key === "ArrowRight") &&
           rabbit.position.z < (SIZE + SPACING) * (width - 1) - 0.1
         ) {
           currentPosition.z += 1;
-          rabbit.rotation.y = (Math.PI * 1) / 2;
-          jump(
-            rabbit,
-            new THREE.Vector3(
-              rabbit.position.x,
-              rabbit.position.y,
-              rabbit.position.z + (SIZE + SPACING),
-            ),
-            camera,
-          );
-        }
-
-        const cell = map[currentPosition.x][currentPosition.z];
-        if (cell.value >= 0 && !cell.visible) {
-          const mesh = createCellsText(cell.value, [
-            currentPosition.x,
-            currentPosition.z,
-          ]);
-          scene.add(mesh);
-        } else if (cell.value === -1) {
-          console.log("Dentge");
+          rabbit.rotation.y = Math.PI / 2;
+          jump(rabbit, "z", camera, currentPosition, map, scene);
         }
       },
       false,
