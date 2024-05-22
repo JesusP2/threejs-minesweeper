@@ -9,10 +9,10 @@ export function createMap(width: number, height: number) {
   generateValidPath(map, [0, 0], [height - 1, width - 1]);
   generateMines(map, 10);
   countMines(map, [map.length, map[0].length]);
-  printMap(map);
+  return map
 }
 
-function printMap(map: number[][]) {
+export function printMap(map: number[][]) {
   let mapViz = '';
   for (const row of map) {
     const str = row
@@ -30,7 +30,7 @@ function printMap(map: number[][]) {
 // iter 1: [0, 4]
 // iter 2: [1, 4]
 // iter 3: cannot be [1, 3]
-export function generateValidPath(
+function generateValidPath(
   map: number[][],
   start: [number, number],
   end: [number, number],
@@ -314,7 +314,7 @@ function getDirection(
   return choices[luckyGuy];
 }
 
-export function generateMines(map: number[][], minesNumber: number) {
+function generateMines(map: number[][], minesNumber: number) {
   const width = map[0].length;
   const height = map.length;
   let minesAdded = 0;
@@ -336,7 +336,7 @@ export function generateMines(map: number[][], minesNumber: number) {
   }
 }
 
-export function countMines(map: number[][], size: [number, number]) {
+function countMines(map: number[][], size: [number, number]) {
   for (let row = 0; row < size[0]; row++) {
     for (let col = 0; col < size[1]; col++) {
       let minesNum = 0;
@@ -355,7 +355,7 @@ export function countMines(map: number[][], size: [number, number]) {
           }
         }
       }
-      if (map[row][col] === 0) {
+      if (map[row][col] === 0 || map[row][col] === -2) {
         map[row][col] = minesNum;
       }
     }
