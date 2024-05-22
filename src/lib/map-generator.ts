@@ -12,24 +12,17 @@ export function createMap(width: number, height: number) {
   return map.map(row => row.map(cell => ({ visible: false, value: cell })))
 }
 
-export function printMap(map: number[][]) {
+export function printMap(map: { value: number, visible: boolean }[][]) {
   let mapViz = '';
   for (const row of map) {
     const str = row
-      .map((col) => (col === -2 ? 'P' : col === -1 ? 'M' : col))
+      .map((col) => (col.value === -2 ? 'P' : col.value === -1 ? 'M' : col.value))
       .join(' ');
     mapViz += `${str}\n`;
   }
   console.log(mapViz);
 }
 
-// you can only go left/right/top/bottom of the current box, the next box cannot be adjacent to a previous section of the path(besides the current box)
-// example:
-// start = [0, 3]
-// end [5, 5]
-// iter 1: [0, 4]
-// iter 2: [1, 4]
-// iter 3: cannot be [1, 3]
 function generateValidPath(
   map: number[][],
   start: [number, number],

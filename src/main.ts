@@ -1,9 +1,5 @@
 import "./style.css";
-import {
-  Font,
-  FontLoader,
-  GLTFLoader,
-} from "three/examples/jsm/Addons.js";
+import { Font, FontLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -94,16 +90,11 @@ dialogForm.addEventListener("submit", (e) => {
   const width = Number(formData.get("width"));
   const map = createMap(width, height);
   const currentPosition = { x: 0, z: 0 };
-  // printMap(map)
 
   for (let h = 0; h < height; h++) {
     for (let w = 0; w < width; w++) {
       const newBox = createCellPlatform(SIZE, SPACING, [h, w]);
       scene.add(newBox);
-      const cellValue = map[h][w].value
-      if (cellValue >= 0) {
-        createCellsText(cellValue, [h, w]);
-      }
     }
   }
   dialog.close();
@@ -171,6 +162,13 @@ dialogForm.addEventListener("submit", (e) => {
             pivot.position.z + (SIZE + SPACING),
           ),
         );
+      }
+
+      const cell = map[currentPosition.x][currentPosition.z];
+      if (cell.value >= 0 && !cell.visible) {
+        createCellsText(cell.value, [currentPosition.x, currentPosition.z]);
+      } else if (cell.value === -1) {
+        console.log("Dentge");
       }
     },
     false,
