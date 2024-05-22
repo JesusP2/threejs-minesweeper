@@ -1,9 +1,26 @@
 import "./style.css";
-import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import {
+  Font,
+  FontLoader,
+  GLTFLoader,
+} from "three/examples/jsm/Addons.js";
+import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import * as THREE from "three";
 import gsap from "gsap";
+import { createMap, printMap } from "./lib/map-generator";
 // import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
+const SIZE = 2;
+const SPACING = 0.2;
+const fontMaterials = [
+  new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true }), // front
+  new THREE.MeshPhongMaterial({ color: 0xffffff }), // side
+];
+let font = undefined as unknown as Font;
+const fontLoader = new FontLoader();
+fontLoader.load("JetBrainsMono NF_Bold.json", function (fnt) {
+  font = fnt;
+});
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x999999);
 
@@ -75,13 +92,18 @@ dialogForm.addEventListener("submit", (e) => {
 
   const height = Number(formData.get("height"));
   const width = Number(formData.get("width"));
+  const map = createMap(width, height);
+  const currentPosition = { x: 0, z: 0 };
+  printMap(map)
 
-  const size = 2;
-  const spacing = 0.2;
   for (let h = 0; h < height; h++) {
     for (let w = 0; w < width; w++) {
-      const newBox = createBoxPlatform(size, spacing, [h, w]);
+      const newBox = createCellPlatform(SIZE, SPACING, [h, w]);
       scene.add(newBox);
+      const cellValue = map[h][w]
+      if (cellValue >= 0) {
+        createCellsText(cellValue, [h, w]);
+      }
     }
   }
   dialog.close();
@@ -92,13 +114,14 @@ dialogForm.addEventListener("submit", (e) => {
       if (
         !blockActions &&
         (event.key === "w" || event.key === "ArrowUp") &&
-        pivot.position.x < (size + spacing) * (height - 1) - 0.1 // magic number, cba calculating the right value
+        pivot.position.x < (SIZE + SPACING) * (height - 1) - 0.1 // magic number, cba calculating the right value
       ) {
+        currentPosition.x += 1;
         pivot.rotation.y = Math.PI;
         simulateJump(
           pivot,
           new THREE.Vector3(
-            pivot.position.x + size + spacing,
+            pivot.position.x + SIZE + SPACING,
             pivot.position.y,
             pivot.position.z,
           ),
@@ -108,11 +131,12 @@ dialogForm.addEventListener("submit", (e) => {
         (event.key === "s" || event.key === "ArrowDown") &&
         pivot.position.x > 0
       ) {
+        currentPosition.x -= 1;
         pivot.rotation.y = 0;
         simulateJump(
           pivot,
           new THREE.Vector3(
-            pivot.position.x - (size + spacing),
+            pivot.position.x - (SIZE + SPACING),
             pivot.position.y,
             pivot.position.z,
           ),
@@ -122,27 +146,29 @@ dialogForm.addEventListener("submit", (e) => {
         (event.key === "a" || event.key === "ArrowLeft") &&
         pivot.position.z > 0
       ) {
+        currentPosition.z -= 1;
         pivot.rotation.y = (Math.PI * 3) / 2;
         simulateJump(
           pivot,
           new THREE.Vector3(
             pivot.position.x,
             pivot.position.y,
-            pivot.position.z - (size + spacing),
+            pivot.position.z - (SIZE + SPACING),
           ),
         );
       } else if (
         !blockActions &&
         (event.key === "d" || event.key === "ArrowRight") &&
-        pivot.position.z < (size + spacing) * (width - 1) - 0.1
+        pivot.position.z < (SIZE + SPACING) * (width - 1) - 0.1
       ) {
+        currentPosition.z += 1;
         pivot.rotation.y = (Math.PI * 1) / 2;
         simulateJump(
           pivot,
           new THREE.Vector3(
             pivot.position.x,
             pivot.position.y,
-            pivot.position.z + (size + spacing),
+            pivot.position.z + (SIZE + SPACING),
           ),
         );
       }
@@ -151,7 +177,26 @@ dialogForm.addEventListener("submit", (e) => {
   );
 });
 
-function createBoxPlatform(
+function createCellsText(num: number, position: [number, number]) {
+  const geometry = new TextGeometry(num.toString(), {
+    font: font,
+    size: 1,
+    depth: 0.01,
+  });
+  geometry.computeBoundingBox();
+  const mesh = new THREE.Mesh(geometry, fontMaterials);
+  mesh.rotation.x = (Math.PI * 3) / 2;
+  mesh.rotation.z = -Math.PI / 2;
+  mesh.position.y = 0.05;
+  mesh.position.set(
+    position[0] * (SIZE + SPACING) - 0.5,
+    0.05,
+    position[1] * (SIZE + SPACING) - 0.5,
+  );
+  scene.add(mesh);
+}
+
+function createCellPlatform(
   size: number,
   spacing: number,
   pos: [number, number],
