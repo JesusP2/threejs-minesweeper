@@ -1,5 +1,6 @@
 import {
   BLOCK_ACTIONS,
+  centerCamera,
   createCellPlatform,
   createCellsText,
   jump,
@@ -49,6 +50,7 @@ export function startGame({
     );
     scene.add(mesh);
 
+    centerCamera(camera, rabbit, rabbit.position.y)
     document.addEventListener(
       "keyup",
       (event) => {
@@ -66,9 +68,8 @@ export function startGame({
               rabbit.position.y,
               rabbit.position.z,
             ),
+            camera,
           );
-          centerCamera(camera, rabbit);
-          // camera.position.x += SIZE + SPACING;
         } else if (
           !BLOCK_ACTIONS &&
           (event.key === "s" || event.key === "ArrowDown") &&
@@ -83,6 +84,7 @@ export function startGame({
               rabbit.position.y,
               rabbit.position.z,
             ),
+            camera,
           );
         } else if (
           !BLOCK_ACTIONS &&
@@ -98,6 +100,7 @@ export function startGame({
               rabbit.position.y,
               rabbit.position.z - (SIZE + SPACING),
             ),
+            camera,
           );
         } else if (
           !BLOCK_ACTIONS &&
@@ -113,6 +116,7 @@ export function startGame({
               rabbit.position.y,
               rabbit.position.z + (SIZE + SPACING),
             ),
+            camera,
           );
         }
 
@@ -130,25 +134,4 @@ export function startGame({
       false,
     );
   });
-}
-
-function centerCamera(camera: THREE.PerspectiveCamera, rabbit: THREE.Object3D) {
-  const box = new THREE.Box3().setFromObject(rabbit);
-  const center = new THREE.Vector3();
-  box.getCenter(center);
-
-  const size = new THREE.Vector3();
-  box.getSize(size);
-  // Calculate the distance from the camera to the center of the object
-  const maxDim = Math.max(size.x, size.y, size.z);
-  const fov = camera.fov * (Math.PI / 180);
-  let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-
-  // Multiply by a factor to give some space around the object
-  cameraZ *= 1.5;
-
-  // Set the camera position and make it look at the center of the object
-  camera.position.set(center.x, center.y, cameraZ);
-  camera.lookAt(center);
-  camera.updateProjectionMatrix();
 }

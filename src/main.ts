@@ -20,12 +20,13 @@ const aspect = window.innerWidth / window.innerHeight;
 const near = 0.1;
 const far = 100;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-camera.position.set(-5.096, 16.26, 5.68);
+
+camera.position.set(-5.096 - 10, 16.26 + 10, 5.68);
 camera.rotation.set(-1.57, -0.62, -1.57);
 scene.add(camera);
-
-const controls = new OrbitControls( camera, renderer.domElement );
-controls.update();
+//
+// const controls = new OrbitControls( camera, renderer.domElement );
+// controls.update();
 
 const light = new THREE.AmbientLight(0xffffff, 1);
 const light2 = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -42,9 +43,6 @@ loader.load("rabbit_blender.glb", (gltf) => {
   const center = new THREE.Vector3();
   box.getCenter(center);
   model.position.sub(center);
-
-  const size = new THREE.Vector3();
-  box.getSize(size)
 
   rabbit = new THREE.Object3D();
   rabbit.add(model);
