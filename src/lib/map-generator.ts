@@ -9,7 +9,7 @@ export function createMap(width: number, height: number) {
   generateValidPath(map, [0, 0], [height - 1, width - 1]);
   generateMines(map, 10);
   countMines(map, [map.length, map[0].length]);
-  return map
+  return map.map(row => row.map(cell => ({ visible: false, value: cell })))
 }
 
 export function printMap(map: number[][]) {

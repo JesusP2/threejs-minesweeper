@@ -94,13 +94,13 @@ dialogForm.addEventListener("submit", (e) => {
   const width = Number(formData.get("width"));
   const map = createMap(width, height);
   const currentPosition = { x: 0, z: 0 };
-  printMap(map)
+  // printMap(map)
 
   for (let h = 0; h < height; h++) {
     for (let w = 0; w < width; w++) {
       const newBox = createCellPlatform(SIZE, SPACING, [h, w]);
       scene.add(newBox);
-      const cellValue = map[h][w]
+      const cellValue = map[h][w].value
       if (cellValue >= 0) {
         createCellsText(cellValue, [h, w]);
       }
