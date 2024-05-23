@@ -61,6 +61,8 @@ export function jump(
   rabbit: THREE.Object3D,
   axis: "z" | "x" | "-z" | "-x",
   camera: THREE.PerspectiveCamera,
+  currentCell: THREE.Mesh,
+  fall: boolean,
 ) {
   BLOCK_ACTIONS = true;
   const targetPosition = new THREE.Vector3(
@@ -77,7 +79,7 @@ export function jump(
   const startPosition = rabbit.position.clone();
   const jumpHeight = 1;
   const duration = 0.4;
-  const yo = rabbit.position.y;
+  const baseHeight = rabbit.position.y;
   gsap.to(rabbit.position, {
     duration: duration,
     x: targetPosition.x,
@@ -87,10 +89,28 @@ export function jump(
       const progress = this.progress();
       const parabolicHeight = jumpHeight * 4 * progress * (1 - progress);
       rabbit.position.y = startPosition.y + parabolicHeight;
-      centerCamera(camera, rabbit, yo);
+      centerCamera(camera, rabbit, baseHeight);
     },
     onComplete: () => {
-      BLOCK_ACTIONS = false;
+      if (fall) {
+        const dialog =
+          document.querySelector<HTMLDialogElement>("#deadge-dialog");
+        dialog?.showModal();
+        gsap.to(rabbit.position, {
+          duration: duration,
+          y: -10,
+          ease: "power2.out",
+        });
+        gsap.to(currentCell.position, {
+          duration: duration,
+          y: -10,
+          ease: "power2.out",
+        });
+        // currentCell.position.y = -10
+        // rabbit.position.y = -10
+      } else {
+        BLOCK_ACTIONS = false;
+      }
     },
   });
 }
@@ -106,13 +126,17 @@ export function centerCamera(
 
   const size = new THREE.Vector3();
   box.getSize(size);
-  const vec = [10, 15, 0]
+  const vec = [10, 15, 0];
   if (isMobile()) {
-    vec[1] = 30
-    vec[0] = 30
-    vec[2] = 5
+    vec[1] = 30;
+    vec[0] = 30;
+    vec[2] = 5;
   }
-  camera.position.set(center.x - vec[0], basePosition + vec[1], center.z + vec[2]);
+  camera.position.set(
+    center.x - vec[0],
+    basePosition + vec[1],
+    center.z + vec[2],
+  );
   // camera.position.y += 3;
   // camera.lookAt(center);
   camera.updateProjectionMatrix();
@@ -134,7 +158,8 @@ export function revealCell(
 }
 
 function isMobile() {
-  const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+  const regex =
+    /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
   return regex.test(navigator.userAgent);
 }
 

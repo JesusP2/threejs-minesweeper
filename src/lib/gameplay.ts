@@ -37,9 +37,12 @@ export function startGame({
     const map = createMap(width, height);
     const currentPosition = { x: 0, z: 0 };
 
+    const cells: THREE.Mesh[][] = [];
     for (let h = 0; h < height; h++) {
+      cells.push([]);
       for (let w = 0; w < width; w++) {
         const newBox = createCellPlatform(SIZE, SPACING, [h, w]);
+        cells[h].push(newBox);
         scene.add(newBox);
       }
     }
@@ -62,7 +65,13 @@ export function startGame({
       ) {
         currentPosition.x += 1;
         rabbit.rotation.y = Math.PI;
-        jump(rabbit, "x", camera);
+        jump(
+          rabbit,
+          "x",
+          camera,
+          cells[currentPosition.x][currentPosition.z],
+          map[currentPosition.x][currentPosition.z].value === -1,
+        );
         revealCell(currentPosition, map, scene);
       }
     });
@@ -73,7 +82,13 @@ export function startGame({
       if (!BLOCK_ACTIONS && rabbit.position.x > 0) {
         currentPosition.x -= 1;
         rabbit.rotation.y = 0;
-        jump(rabbit, "-x", camera);
+        jump(
+          rabbit,
+          "-x",
+          camera,
+          cells[currentPosition.x][currentPosition.z],
+          map[currentPosition.x][currentPosition.z].value === -1,
+        );
         revealCell(currentPosition, map, scene);
       }
     });
@@ -84,7 +99,13 @@ export function startGame({
       if (!BLOCK_ACTIONS && rabbit.position.z > 0) {
         currentPosition.z -= 1;
         rabbit.rotation.y = (Math.PI * 3) / 2;
-        jump(rabbit, "-z", camera);
+        jump(
+          rabbit,
+          "-z",
+          camera,
+          cells[currentPosition.x][currentPosition.z],
+          map[currentPosition.x][currentPosition.z].value === -1,
+        );
         revealCell(currentPosition, map, scene);
       }
     });
@@ -98,7 +119,13 @@ export function startGame({
       ) {
         currentPosition.z += 1;
         rabbit.rotation.y = Math.PI / 2;
-        jump(rabbit, "z", camera);
+        jump(
+          rabbit,
+          "z",
+          camera,
+          cells[currentPosition.x][currentPosition.z],
+          map[currentPosition.x][currentPosition.z].value === -1,
+        );
         revealCell(currentPosition, map, scene);
       }
     });
@@ -108,39 +135,63 @@ export function startGame({
       (event) => {
         if (
           !BLOCK_ACTIONS &&
-          (event.key === "w" || event.key === "ArrowUp") &&
+          (event.key === "w" || event.key === "ArrowUp" || event.key === 'k') &&
           rabbit.position.x < (SIZE + SPACING) * (height - 1) - 0.1 // magic number, cba calculating the right value
         ) {
           currentPosition.x += 1;
           rabbit.rotation.y = Math.PI;
-          jump(rabbit, "x", camera);
+          jump(
+            rabbit,
+            "x",
+            camera,
+            cells[currentPosition.x][currentPosition.z],
+            map[currentPosition.x][currentPosition.z].value === -1,
+          );
           revealCell(currentPosition, map, scene);
         } else if (
           !BLOCK_ACTIONS &&
-          (event.key === "s" || event.key === "ArrowDown") &&
+          (event.key === "s" || event.key === "ArrowDown" || event.key === 'j') &&
           rabbit.position.x > 0
         ) {
           currentPosition.x -= 1;
           rabbit.rotation.y = 0;
-          jump(rabbit, "-x", camera);
+          jump(
+            rabbit,
+            "-x",
+            camera,
+            cells[currentPosition.x][currentPosition.z],
+            map[currentPosition.x][currentPosition.z].value === -1,
+          );
           revealCell(currentPosition, map, scene);
         } else if (
           !BLOCK_ACTIONS &&
-          (event.key === "a" || event.key === "ArrowLeft") &&
+          (event.key === "a" || event.key === "ArrowLeft" || event.key === 'h') &&
           rabbit.position.z > 0
         ) {
           currentPosition.z -= 1;
           rabbit.rotation.y = (Math.PI * 3) / 2;
-          jump(rabbit, "-z", camera);
+          jump(
+            rabbit,
+            "-z",
+            camera,
+            cells[currentPosition.x][currentPosition.z],
+            map[currentPosition.x][currentPosition.z].value === -1,
+          );
           revealCell(currentPosition, map, scene);
         } else if (
           !BLOCK_ACTIONS &&
-          (event.key === "d" || event.key === "ArrowRight") &&
+          (event.key === "d" || event.key === "ArrowRight" || event.key === 'l') &&
           rabbit.position.z < (SIZE + SPACING) * (width - 1) - 0.1
         ) {
           currentPosition.z += 1;
           rabbit.rotation.y = Math.PI / 2;
-          jump(rabbit, "z", camera);
+          jump(
+            rabbit,
+            "z",
+            camera,
+            cells[currentPosition.x][currentPosition.z],
+            map[currentPosition.x][currentPosition.z].value === -1,
+          );
           revealCell(currentPosition, map, scene);
         }
       },

@@ -9,7 +9,7 @@
   <body>
     <canvas id="app"></canvas>
     <script type="module" src="/src/main.ts"></script>
-    <dialog open id="settings-dialog">
+    <dialog id="settings-dialog">
       <h1>Select difficulty of game</h1>
       <form id="dialog-form">
         <menu>
@@ -17,7 +17,13 @@
           <input name="width" value="10" placeholder="width (max 10)" type="number" max="10" />
           <input name="mines" value="30" placeholder="mines (max 30)" type="number" max="30" />
         </menu>
-        <button>click me senpai</button>
+        <button>start game</button>
+      </form>
+    </dialog>
+    <dialog id="deadge-dialog">
+      Deadge
+      <form action="/">
+        <button type="submit">play again</button>
       </form>
     </dialog>
     <menu class="mobile-controls">

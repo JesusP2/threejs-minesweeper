@@ -2,7 +2,7 @@ import "./style.css";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import * as THREE from "three";
 import { startGame } from "./lib/gameplay";
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const SIZE = 2;
 const SPACING = 0.2;
@@ -58,3 +58,5 @@ function render() {
 }
 render();
 document.body.appendChild(renderer.domElement);
+const dialog = document.querySelector<HTMLDialogElement>("#settings-dialog");
+dialog?.showModal();
