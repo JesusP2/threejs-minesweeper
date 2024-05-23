@@ -4,6 +4,7 @@ import {
   createCellPlatform,
   createCellsText,
   jump,
+  revealCell,
 } from "./cell";
 import { createMap } from "./map-generator";
 import * as THREE from "three";
@@ -61,7 +62,8 @@ export function startGame({
       ) {
         currentPosition.x += 1;
         rabbit.rotation.y = Math.PI;
-        jump(rabbit, "x", camera, currentPosition, map, scene);
+        jump(rabbit, "x", camera);
+        revealCell(currentPosition, map, scene);
       }
     });
 
@@ -71,7 +73,8 @@ export function startGame({
       if (!BLOCK_ACTIONS && rabbit.position.x > 0) {
         currentPosition.x -= 1;
         rabbit.rotation.y = 0;
-        jump(rabbit, "-x", camera, currentPosition, map, scene);
+        jump(rabbit, "-x", camera);
+        revealCell(currentPosition, map, scene);
       }
     });
 
@@ -81,7 +84,8 @@ export function startGame({
       if (!BLOCK_ACTIONS && rabbit.position.z > 0) {
         currentPosition.z -= 1;
         rabbit.rotation.y = (Math.PI * 3) / 2;
-        jump(rabbit, "-z", camera, currentPosition, map, scene);
+        jump(rabbit, "-z", camera);
+        revealCell(currentPosition, map, scene);
       }
     });
 
@@ -94,7 +98,8 @@ export function startGame({
       ) {
         currentPosition.z += 1;
         rabbit.rotation.y = Math.PI / 2;
-        jump(rabbit, "z", camera, currentPosition, map, scene);
+        jump(rabbit, "z", camera);
+        revealCell(currentPosition, map, scene);
       }
     });
 
@@ -108,7 +113,8 @@ export function startGame({
         ) {
           currentPosition.x += 1;
           rabbit.rotation.y = Math.PI;
-          jump(rabbit, "x", camera, currentPosition, map, scene);
+          jump(rabbit, "x", camera);
+          revealCell(currentPosition, map, scene);
         } else if (
           !BLOCK_ACTIONS &&
           (event.key === "s" || event.key === "ArrowDown") &&
@@ -116,7 +122,8 @@ export function startGame({
         ) {
           currentPosition.x -= 1;
           rabbit.rotation.y = 0;
-          jump(rabbit, "-x", camera, currentPosition, map, scene);
+          jump(rabbit, "-x", camera);
+          revealCell(currentPosition, map, scene);
         } else if (
           !BLOCK_ACTIONS &&
           (event.key === "a" || event.key === "ArrowLeft") &&
@@ -124,7 +131,8 @@ export function startGame({
         ) {
           currentPosition.z -= 1;
           rabbit.rotation.y = (Math.PI * 3) / 2;
-          jump(rabbit, "-z", camera, currentPosition, map, scene);
+          jump(rabbit, "-z", camera);
+          revealCell(currentPosition, map, scene);
         } else if (
           !BLOCK_ACTIONS &&
           (event.key === "d" || event.key === "ArrowRight") &&
@@ -132,7 +140,8 @@ export function startGame({
         ) {
           currentPosition.z += 1;
           rabbit.rotation.y = Math.PI / 2;
-          jump(rabbit, "z", camera, currentPosition, map, scene);
+          jump(rabbit, "z", camera);
+          revealCell(currentPosition, map, scene);
         }
       },
       false,

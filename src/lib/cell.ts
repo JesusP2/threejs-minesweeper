@@ -61,9 +61,6 @@ export function jump(
   rabbit: THREE.Object3D,
   axis: "z" | "x" | "-z" | "-x",
   camera: THREE.PerspectiveCamera,
-  currentPosition: { x: number; z: number },
-  map: MinesweeperMap,
-  scene: THREE.Scene,
 ) {
   BLOCK_ACTIONS = true;
   const targetPosition = new THREE.Vector3(
@@ -96,7 +93,6 @@ export function jump(
       BLOCK_ACTIONS = false;
     },
   });
-  revealCell(currentPosition, map, scene);
 }
 
 export function centerCamera(
@@ -134,8 +130,6 @@ export function revealCell(
       currentPosition.z,
     ]);
     scene.add(mesh);
-  } else if (cell.value === -1) {
-    console.log("Dentge");
   }
 }
 
