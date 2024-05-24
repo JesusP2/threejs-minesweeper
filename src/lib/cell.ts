@@ -60,6 +60,7 @@ export function createCellPlatform(
 export function jump(
   rabbit: THREE.Object3D,
   axis: "z" | "x" | "-z" | "-x",
+  currentPosition: { x: number; z: number },
   camera: THREE.PerspectiveCamera,
   cells: THREE.Mesh[][],
   map: MinesweeperMap,
@@ -93,6 +94,14 @@ export function jump(
       centerCamera(camera, rabbit, baseHeight);
     },
     onComplete: () => {
+      if (
+        currentPosition.x === map.length - 1 &&
+        currentPosition.z === map[0].length - 1
+      ) {
+        const dialog =
+          document.querySelector<HTMLDialogElement>("#yippee-dialog");
+        dialog?.showModal();
+      }
       if (fall) {
         const dialog =
           document.querySelector<HTMLDialogElement>("#deadge-dialog");

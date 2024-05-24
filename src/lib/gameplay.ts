@@ -34,20 +34,20 @@ export function startGame({
 
     const height = Number(formData.get("height"));
     const width = Number(formData.get("width"));
-    const mines = Number(formData.get('mines'))
+    const mines = Number(formData.get("mines"));
     const map = createMap(width, height, mines);
     const currentPosition = { x: 0, z: 0 };
 
-    crystal.position.y = 1
-    crystal.position.x = (height - 1) * (SIZE + SPACING)
-    crystal.position.z = (width - 1) * (SIZE + SPACING)
+    crystal.position.y = 1;
+    crystal.position.x = (height - 1) * (SIZE + SPACING);
+    crystal.position.z = (width - 1) * (SIZE + SPACING);
 
     gsap.to(crystal.rotation, {
       duration: 2,
       y: 2 * Math.PI,
       repeat: -1,
-      ease: 'none' 
-    })
+      ease: "none",
+    });
 
     const cells: THREE.Mesh[][] = [];
     for (let h = 0; h < height; h++) {
@@ -80,6 +80,7 @@ export function startGame({
         jump(
           rabbit,
           "x",
+          currentPosition,
           camera,
           cells,
           map,
@@ -98,6 +99,7 @@ export function startGame({
         jump(
           rabbit,
           "-x",
+          currentPosition,
           camera,
           cells,
           map,
@@ -116,6 +118,7 @@ export function startGame({
         jump(
           rabbit,
           "-z",
+          currentPosition,
           camera,
           cells,
           map,
@@ -137,6 +140,7 @@ export function startGame({
         jump(
           rabbit,
           "z",
+          currentPosition,
           camera,
           cells,
           map,
@@ -159,6 +163,7 @@ export function startGame({
           jump(
             rabbit,
             "x",
+            currentPosition,
             camera,
             cells,
             map,
@@ -177,6 +182,7 @@ export function startGame({
           jump(
             rabbit,
             "-x",
+            currentPosition,
             camera,
             cells,
             map,
@@ -195,6 +201,7 @@ export function startGame({
           jump(
             rabbit,
             "-z",
+            currentPosition,
             camera,
             cells,
             map,
@@ -213,6 +220,7 @@ export function startGame({
           jump(
             rabbit,
             "z",
+            currentPosition,
             camera,
             cells,
             map,
