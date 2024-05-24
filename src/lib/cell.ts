@@ -61,7 +61,8 @@ export function jump(
   rabbit: THREE.Object3D,
   axis: "z" | "x" | "-z" | "-x",
   camera: THREE.PerspectiveCamera,
-  currentCell: THREE.Mesh,
+  cells: THREE.Mesh[][],
+  map: MinesweeperMap,
   fall: boolean,
 ) {
   BLOCK_ACTIONS = true;
@@ -101,13 +102,17 @@ export function jump(
           y: -10,
           ease: "power2.out",
         });
-        gsap.to(currentCell.position, {
-          duration: duration,
-          y: -10,
-          ease: "power2.out",
-        });
-        // currentCell.position.y = -10
-        // rabbit.position.y = -10
+        for (let h = 0; h < cells.length; h++) {
+          for (let w = 0; w < cells[0].length; w++) {
+            if (map[h][w].value === -1) {
+              gsap.to(cells[h][w].position, {
+                duration: duration,
+                y: -10,
+                ease: "power2.out",
+              });
+            }
+          }
+        }
       } else {
         BLOCK_ACTIONS = false;
       }
@@ -142,7 +147,7 @@ export function centerCamera(
   camera.updateProjectionMatrix();
 }
 
-export function revealCell(
+export function revealCellNumber(
   currentPosition: { x: number; z: number },
   map: MinesweeperMap,
   scene: THREE.Scene,

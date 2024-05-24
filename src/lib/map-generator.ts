@@ -2,14 +2,14 @@
 // -2 = valid path
 
 export type MinesweeperMap = { value: number, visible: boolean }[][]
-export function createMap(width: number, height: number) {
+export function createMap(width: number, height: number, mines: number) {
   const row = new Array(width).fill(0);
   const map: number[][] = [];
   for (let h = 0; h < height; h++) {
     map.push([...row]);
   }
   generateValidPath(map, [0, 0], [height - 1, width - 1]);
-  generateMines(map, 10);
+  generateMines(map, mines);
   countMines(map, [map.length, map[0].length]);
   return map.map(row => row.map(cell => ({ visible: false, value: cell })))
 }
