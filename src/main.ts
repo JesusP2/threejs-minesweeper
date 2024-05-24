@@ -33,7 +33,6 @@ scene.add(light);
 light2.position.x = -5;
 scene.add(light2);
 
-let rabbit: any;
 const loader = new GLTFLoader();
 loader.load("rabbit_blender.glb", (gltf) => {
   const model = gltf.scene;
@@ -43,12 +42,23 @@ loader.load("rabbit_blender.glb", (gltf) => {
   box.getCenter(center);
   model.position.sub(center);
 
-  rabbit = new THREE.Object3D();
+  const rabbit = new THREE.Object3D();
   rabbit.add(model);
 
   scene.add(rabbit);
   rabbit.position.y = 0.7;
-  startGame({ scene, SIZE, SPACING, rabbit, camera });
+  loader.load("untitled.gltf", (gltf) => {
+    const model = gltf.scene;
+    const box = new THREE.Box3().setFromObject(model);
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    model.position.sub(center);
+    const crystal = new THREE.Object3D()
+    crystal.add(model)
+
+    scene.add(crystal);
+    startGame({ scene, SIZE, SPACING, rabbit, crystal, camera });
+  });
 });
 
 function render() {

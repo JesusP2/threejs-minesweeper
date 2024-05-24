@@ -6,7 +6,7 @@ import {
   jump,
   revealCellNumber,
 } from "./cell";
-import { createMap, printMap } from "./map-generator";
+import { createMap } from "./map-generator";
 import * as THREE from "three";
 
 export function startGame({
@@ -14,12 +14,14 @@ export function startGame({
   SIZE,
   SPACING,
   rabbit,
+  crystal,
   camera,
 }: {
   scene: THREE.Scene;
   SIZE: number;
   SPACING: number;
   rabbit: THREE.Object3D;
+  crystal: THREE.Object3D;
   camera: THREE.PerspectiveCamera;
 }) {
   const dialog = document.querySelector<HTMLDialogElement>("#settings-dialog")!;
@@ -27,9 +29,6 @@ export function startGame({
 
   dialogForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    // const controls = new OrbitControls(camera, canvas);
-    // controls.addEventListener("change", render);
-    // controls.update();
     const formData = new FormData(e.currentTarget as any);
 
     const height = Number(formData.get("height"));
@@ -37,6 +36,10 @@ export function startGame({
     const mines = Number(formData.get('mines'))
     const map = createMap(width, height, mines);
     const currentPosition = { x: 0, z: 0 };
+
+    crystal.position.y = 1
+    crystal.position.x = (height - 1) * (SIZE + SPACING)
+    crystal.position.z = (width -1) * (SIZE + SPACING)
 
     const cells: THREE.Mesh[][] = [];
     for (let h = 0; h < height; h++) {
