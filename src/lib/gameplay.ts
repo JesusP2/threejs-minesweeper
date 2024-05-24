@@ -85,6 +85,7 @@ export function startGame({
           cells,
           map,
           map[currentPosition.x][currentPosition.z].value === -1,
+          scene,
         );
         revealCellNumber(currentPosition, map, scene);
       }
@@ -104,6 +105,7 @@ export function startGame({
           cells,
           map,
           map[currentPosition.x][currentPosition.z].value === -1,
+          scene,
         );
         revealCellNumber(currentPosition, map, scene);
       }
@@ -123,6 +125,7 @@ export function startGame({
           cells,
           map,
           map[currentPosition.x][currentPosition.z].value === -1,
+          scene,
         );
         revealCellNumber(currentPosition, map, scene);
       }
@@ -145,6 +148,7 @@ export function startGame({
           cells,
           map,
           map[currentPosition.x][currentPosition.z].value === -1,
+          scene,
         );
         revealCellNumber(currentPosition, map, scene);
       }
@@ -168,6 +172,7 @@ export function startGame({
             cells,
             map,
             map[currentPosition.x][currentPosition.z].value === -1,
+            scene,
           );
           revealCellNumber(currentPosition, map, scene);
         } else if (
@@ -187,6 +192,7 @@ export function startGame({
             cells,
             map,
             map[currentPosition.x][currentPosition.z].value === -1,
+            scene,
           );
           revealCellNumber(currentPosition, map, scene);
         } else if (
@@ -206,6 +212,7 @@ export function startGame({
             cells,
             map,
             map[currentPosition.x][currentPosition.z].value === -1,
+            scene,
           );
           revealCellNumber(currentPosition, map, scene);
         } else if (
@@ -225,6 +232,7 @@ export function startGame({
             cells,
             map,
             map[currentPosition.x][currentPosition.z].value === -1,
+            scene,
           );
           revealCellNumber(currentPosition, map, scene);
         }

@@ -11,7 +11,9 @@ export function createMap(width: number, height: number, mines: number) {
   generateValidPath(map, [0, 0], [height - 1, width - 1]);
   generateMines(map, mines);
   countMines(map, [map.length, map[0].length]);
-  return map.map(row => row.map(cell => ({ visible: false, value: cell })))
+  const yo = map.map(row => row.map(cell => ({ visible: false, value: cell })))
+  printMap(yo)
+  return yo
 }
 
 export function printMap(map: MinesweeperMap) {
@@ -339,7 +341,7 @@ function countMines(map: number[][], size: [number, number]) {
         for (let j = -1; j <= 1; j++) {
           if (
             row + i < 0 ||
-            row + 1 >= size[0] ||
+            row + i >= size[0] ||
             col + j < 0 ||
             col + j >= size[1]
           ) {

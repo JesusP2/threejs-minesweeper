@@ -65,6 +65,7 @@ export function jump(
   cells: THREE.Mesh[][],
   map: MinesweeperMap,
   fall: boolean,
+  scene: THREE.Scene
 ) {
   BLOCK_ACTIONS = true;
   const targetPosition = new THREE.Vector3(
@@ -119,6 +120,8 @@ export function jump(
                 y: -10,
                 ease: "power2.out",
               });
+            } else {
+              revealCellNumber({ x: h, z: w }, map, scene)
             }
           }
         }
