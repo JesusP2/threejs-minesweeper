@@ -1,3 +1,4 @@
+import gsap from "gsap";
 import {
   BLOCK_ACTIONS,
   centerCamera,
@@ -39,7 +40,14 @@ export function startGame({
 
     crystal.position.y = 1
     crystal.position.x = (height - 1) * (SIZE + SPACING)
-    crystal.position.z = (width -1) * (SIZE + SPACING)
+    crystal.position.z = (width - 1) * (SIZE + SPACING)
+
+    gsap.to(crystal.rotation, {
+      duration: 2,
+      y: 2 * Math.PI,
+      repeat: -1,
+      ease: 'none' 
+    })
 
     const cells: THREE.Mesh[][] = [];
     for (let h = 0; h < height; h++) {
